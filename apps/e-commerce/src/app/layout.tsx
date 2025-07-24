@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react';
 import './global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+export enum GlobalStorageKey {
+  TOKEN = 'token',
+  USER_ID = 'userId',
+}
+
 const queryClient = new QueryClient();
 
 export default function RootLayout({
