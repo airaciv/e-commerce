@@ -11,6 +11,9 @@
     },
     {
       "path": "./libs/components"
+    },
+    {
+      "path": "./libs/core"
     }
   ]
 }
