@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import './global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Container } from '@mui/material';
 
 export enum GlobalStorageKey {
   TOKEN = 'token',
@@ -26,7 +27,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <QueryClientProvider client={queryClient}>
-          {hasInitialized && children}
+          <Container component="main" sx={{ height: '100%' }}>
+            {hasInitialized && children}
+          </Container>
         </QueryClientProvider>
       </body>
     </html>
