@@ -1,1 +1,1 @@
-export * from './lib/core.js';
+export * from './lib/validation/message.js'
