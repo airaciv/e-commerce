@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Alert, AlertProps, Snackbar } from '@mui/material';
 import { useMount } from 'react-use';
 import { OpenAPI } from './_core/openapi/requests';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export enum GlobalStorageKey {
   TOKEN = 'token',
@@ -50,26 +52,28 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <QueryClientProvider client={queryClient}>
-          <AppContext.Provider
-            value={{
-              toast: (message, options) => {
-                setToastProp({ message, options });
-              },
-            }}
-          >
-            <Snackbar
-              open={!!toastProp.message}
-              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-              autoHideDuration={5000}
-              onClose={() => setToastProp({ message: '' })}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <AppContext.Provider
+              value={{
+                toast: (message, options) => {
+                  setToastProp({ message, options });
+                },
+              }}
             >
-              <Alert severity={toastProp.options?.severity}>
-                {toastProp.message}
-              </Alert>
-            </Snackbar>
+              <Snackbar
+                open={!!toastProp.message}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                autoHideDuration={5000}
+                onClose={() => setToastProp({ message: '' })}
+              >
+                <Alert severity={toastProp.options?.severity}>
+                  {toastProp.message}
+                </Alert>
+              </Snackbar>
 
-            {children}
-          </AppContext.Provider>
+              {children}
+            </AppContext.Provider>
+          </LocalizationProvider>
         </QueryClientProvider>
       </body>
     </html>
