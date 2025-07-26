@@ -4,6 +4,8 @@ import { createContext, useContext, useState } from 'react';
 import './global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Alert, AlertProps, Container, Snackbar } from '@mui/material';
+import { useMount } from 'react-use';
+import { OpenAPI } from './_core/openapi/requests';
 
 export enum GlobalStorageKey {
   TOKEN = 'token',
@@ -35,6 +37,15 @@ export default function RootLayout({
     options?: ToastOptions;
   }>({ message: '' });
 
+  useMount(() => {
+    OpenAPI.interceptors.request.use((config) => {
+      config.headers = {
+        'Content-Type': 'application/json',
+      };
+      return config;
+    });
+  });
+
   return (
     <html lang="en">
       <body>
@@ -57,9 +68,9 @@ export default function RootLayout({
               </Alert>
             </Snackbar>
 
-          <Container component="main" sx={{ height: '100%' }}>
+            <Container component="main" sx={{ height: '100%' }}>
               {children}
-          </Container>
+            </Container>
           </AppContext.Provider>
         </QueryClientProvider>
       </body>
