@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "codegen": "openapi-rq -i 'https://fakestoreapi.com/fakestoreapi.json' -o ./apps/e-commerce/src/app/_core/openapi/",
+    "codegen": "openapi-rq -i ./fakestoreapi.json -o ./apps/e-commerce/src/app/_core/openapi/",
     "postinstall": "npm run codegen"
   },
   "private": true,
