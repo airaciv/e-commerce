@@ -2,8 +2,9 @@
 
 import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
-import { GlobalStorageKey } from '../layout';
 import { useLocalStorage, useMount } from 'react-use';
+import { Container } from '@mui/material';
+import { GlobalStorageKey } from '../layout';
 
 export default function UnauthenticatedLayout({ children }: PropsWithChildren) {
   const [token] = useLocalStorage(GlobalStorageKey.TOKEN);
@@ -14,5 +15,9 @@ export default function UnauthenticatedLayout({ children }: PropsWithChildren) {
     }
   });
 
-  return <>{children}</>;
+  return (
+    <Container component="main" sx={{ height: '100%' }}>
+      {children}
+    </Container>
+  );
 }

@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from 'react';
 import './global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Alert, AlertProps, Container, Snackbar } from '@mui/material';
+import { Alert, AlertProps, Snackbar } from '@mui/material';
 import { useMount } from 'react-use';
 import { OpenAPI } from './_core/openapi/requests';
 
@@ -68,9 +68,7 @@ export default function RootLayout({
               </Alert>
             </Snackbar>
 
-            <Container component="main" sx={{ height: '100%' }}>
-              {children}
-            </Container>
+            {children}
           </AppContext.Provider>
         </QueryClientProvider>
       </body>
