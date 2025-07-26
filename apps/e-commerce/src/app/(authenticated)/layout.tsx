@@ -1,18 +1,23 @@
 'use client';
 
 import { redirect } from 'next/navigation';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
 import { GlobalStorageKey } from '../layout';
+import { useLocalStorage, useMount } from 'react-use';
 import { AppBar, Button, Container } from '@mui/material';
 
 export default function AuthenticatedLayout({ children }: PropsWithChildren) {
-  useEffect(() => {
-    const token = window.localStorage[GlobalStorageKey.TOKEN];
+  const [token] = useLocalStorage(GlobalStorageKey.TOKEN);
 
+  useMount(() => {
     if (!token) {
       redirect(`/login`);
     }
-  }, []);
+  });
+
+  if (!token) {
+    return null;
+  }
 
   return (
     <>
@@ -25,7 +30,9 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
         </Container>
       </AppBar>
 
-      <Container component="main">{children}</Container>
+      <Container component="main" className="my-4">
+        {children}
+      </Container>
     </>
   );
 }
