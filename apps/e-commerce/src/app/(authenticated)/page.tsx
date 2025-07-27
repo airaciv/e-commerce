@@ -3,6 +3,7 @@
 import {
   CartsServiceGetCartsUserByIdQueryResult,
   useCartsServiceGetCartsUserById,
+  UseCartsServiceGetCartsUserByIdKeyFn,
   useCartsServicePostCarts,
   useProductsServiceGetProducts,
   useProductsServiceGetProductsById,
@@ -30,6 +31,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { superstructResolver } from '@hookform/resolvers/superstruct';
 import { array, date, min, number, object, Struct } from 'superstruct';
 import { ProductsService } from '../_core/openapi/requests/services.gen';
+import { useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from './_hooks/useCurrentUser';
 
 interface AddCartPayload {
@@ -211,8 +213,10 @@ const CartTable = memo(function CartTable({
 });
 
 const AddCartForm = memo(function AddCartForm({
+  queryKey,
   onSuccess,
 }: {
+  queryKey: unknown[];
   onSuccess: () => void;
 }) {
   const { toast } = useAppContext();
@@ -249,8 +253,27 @@ const AddCartForm = memo(function AddCartForm({
     reset();
   }, [reset]);
 
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useCartsServicePostCarts({
+    onMutate: async (newCart) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousCarts = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData(
+        queryKey,
+        (old?: CartsServiceGetCartsUserByIdQueryResult['data']) => [
+          {
+            ...newCart.requestBody,
+            id: Math.floor(Math.random() * 1000),
+          },
+          ...(old ?? []),
+        ]
+      );
+
+      return { previousCarts };
+    },
     onError: (err, newCart, context) => {
+      queryClient.setQueryData([queryKey], context?.previousCarts);
       toast('Failed to add cart.', {
         severity: 'error',
       });
@@ -399,19 +422,17 @@ export default function CartsPage() {
   const [productIdPayload, setProductIdPayload] = useState<number | null>(null);
   const [isShowForm, setIsShowForm] = useState(false);
 
-  const { data } = useCartsServiceGetCartsUserById(
-    {
-      id: userId ?? 0,
-      startdate: daterange.start
-        ? format(daterange.start, 'yyyy-MM-dd')
-        : undefined,
-      enddate: daterange.end ? format(daterange.end, 'yyyy-MM-dd') : undefined,
-    },
-    undefined,
-    {
-      enabled: !!userId,
-    }
-  );
+  const queryVariables = {
+    id: userId,
+    startdate: daterange.start
+      ? format(daterange.start, 'yyyy-MM-dd')
+      : undefined,
+    enddate: daterange.end ? format(daterange.end, 'yyyy-MM-dd') : undefined,
+  };
+  const { data } = useCartsServiceGetCartsUserById(queryVariables, undefined, {
+    enabled: !!userId,
+  });
+  const queryKey = UseCartsServiceGetCartsUserByIdKeyFn(queryVariables);
 
   const cartList = useMemo(() => {
     if (!data) {
@@ -483,7 +504,10 @@ export default function CartsPage() {
       </div>
 
       <div className={cn({ hidden: !isShowForm })}>
-        <AddCartForm onSuccess={() => setIsShowForm(false)} />
+        <AddCartForm
+          queryKey={queryKey}
+          onSuccess={() => setIsShowForm(false)}
+        />
       </div>
 
       {cartList}
