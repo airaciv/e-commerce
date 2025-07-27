@@ -1,11 +1,17 @@
 import nx from '@nx/eslint-plugin';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 
 export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
+  ...pluginQuery.configs['flat/recommended'],
   {
-    ignores: ['**/dist'],
+    ignores: [
+      '**/dist',
+      '**/vite.config.*.timestamp*',
+      '**/vitest.config.*.timestamp*',
+    ],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],

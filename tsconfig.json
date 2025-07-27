@@ -8,6 +8,12 @@
     },
     {
       "path": "./apps/e-commerce"
+    },
+    {
+      "path": "./libs/components"
+    },
+    {
+      "path": "./libs/core"
     }
   ]
 }
