@@ -8,7 +8,7 @@ import {
 } from '../_core/openapi/queries';
 import { GlobalStorageKey } from '../layout';
 import {
-  Popover,
+  Modal,
   Rating,
   Table,
   TableBody,
@@ -23,90 +23,81 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { DatePicker } from '@mui/x-date-pickers';
 
+const ProductDetailModal = memo(function ProductDetailModal({
+  id,
+  onClose,
+}: {
+  id: number | null;
+  onClose: () => void;
+}) {
+  const { data } = useProductsServiceGetProductsById(
+    { id: id ?? 0 },
+    undefined,
+    {
+      enabled: !!id,
+    }
+  );
+
+  return (
+    <Modal open={!!id} onClose={onClose}>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-auto bg-white border-2 border-black shadow-2xl p-4">
+        <div className="w-96 p-4 rounded-2xl flex flex-col gap-1">
+          {data?.image && (
+            <div className="relative h-36 w-36 border rounded">
+              <Image
+                src={data.image}
+                alt={data.title ?? 'Product'}
+                fill
+                objectFit="contain"
+              />
+            </div>
+          )}
+
+          <div className="font-semibold line-clamp-2">{data?.title}</div>
+
+          <div className="flex items-center gap-1">
+            <Rating defaultValue={data?.rating?.rate} readOnly />
+
+            <span className="text-xs text-gray-500">
+              ({data?.rating?.count} reviews)
+            </span>
+          </div>
+
+          <div className="font-bold">${data?.price}</div>
+          <div className="line-clamp-3">{data?.description}</div>
+        </div>
+      </div>
+    </Modal>
+  );
+});
+
 const ProductTableRow = memo(function ProductTableRow({
   id,
   qty,
+  onClick,
 }: {
   id: number;
   qty: number;
+  onClick: () => void;
 }) {
   const { data } = useProductsServiceGetProductsById({ id });
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [anchorPosition, setAnchorPosition] = useState({ top: 0, left: 0 });
-
-  const handlePopoverOpen = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
-      setAnchorPosition({ top: event.clientY, left: event.clientX });
-    },
-    []
-  );
-
-  const handlePopoverClose = useCallback(() => {
-    setAnchorEl(null);
-  }, []);
-
-  const isOpen = Boolean(anchorEl);
-
   return (
-    <>
-      <TableRow className="flex gap-4">
-        <TableCell
-          onMouseMove={handlePopoverOpen}
-          onMouseLeave={handlePopoverClose}
-          className="cursor-default"
-        >
-          {data?.title}
-        </TableCell>
-        <TableCell>{qty}</TableCell>
-      </TableRow>
-
-      {isOpen && (
-        <Popover
-          id="mouse-over-popover"
-          sx={{ pointerEvents: 'none' }}
-          open={true}
-          anchorReference="anchorPosition"
-          anchorPosition={anchorPosition}
-          onClose={handlePopoverClose}
-          disableRestoreFocus
-        >
-          <div className="w-96 p-4 rounded-2xl flex flex-col gap-1">
-            {data?.image && (
-              <div className="relative h-36 w-36 border rounded">
-                <Image
-                  src={data.image}
-                  alt={data.title ?? 'Product'}
-                  fill
-                  objectFit="contain"
-                />
-              </div>
-            )}
-
-            <div className="font-semibold line-clamp-2">{data?.title}</div>
-
-            <div className="flex items-center gap-1">
-              <Rating defaultValue={data?.rating?.rate} readOnly />
-
-              <span className="text-xs text-gray-500">
-                ({data?.rating?.count} reviews)
-              </span>
-            </div>
-
-            <div className="font-bold">${data?.price}</div>
-            <div className="line-clamp-3">{data?.description}</div>
-          </div>
-        </Popover>
-      )}
-    </>
+    <TableRow className="flex gap-4">
+      <TableCell onClick={onClick} className="cursor-default">
+        {data?.title}
+      </TableCell>
+      <TableCell>{qty}</TableCell>
+    </TableRow>
   );
 });
 
 const CartItem = memo(function CartItem({
   cart,
+  onViewProduct,
 }: {
   cart: NonNullable<CartsServiceGetCartsUserByIdQueryResult['data']>[0];
+  onViewProduct: (id: number | null) => void;
 }) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
@@ -119,9 +110,16 @@ const CartItem = memo(function CartItem({
           return null;
         }
 
-        return <ProductTableRow key={index} id={productId} qty={quantity} />;
+        return (
+          <ProductTableRow
+            key={index}
+            id={productId}
+            qty={quantity}
+            onClick={() => onViewProduct(productId)}
+          />
+        );
       });
-  }, [cart.products, page, rowsPerPage]);
+  }, [cart.products, page, rowsPerPage, onViewProduct]);
 
   const handleChangePage = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -190,6 +188,7 @@ export default function CartsPage() {
     start: null,
     end: null,
   });
+  const [productIdPayload, setProductIdPayload] = useState<number | null>(null);
 
   const { data } = useCartsServiceGetCartsUserById(
     {
@@ -218,7 +217,13 @@ export default function CartsPage() {
         );
       })
       .map((cart) => {
-        return <CartItem key={cart.id} cart={cart} />;
+        return (
+          <CartItem
+            key={cart.id}
+            cart={cart}
+            onViewProduct={setProductIdPayload}
+          />
+        );
       });
   }, [data]);
 
@@ -263,6 +268,11 @@ export default function CartsPage() {
       </div>
 
       {cartList}
+
+      <ProductDetailModal
+        id={productIdPayload}
+        onClose={() => setProductIdPayload(null)}
+      />
     </div>
   );
 }
