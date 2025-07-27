@@ -98,7 +98,7 @@ const ProductTableRow = memo(function ProductTableRow({
   );
 });
 
-const CartItem = memo(function CartItem({
+const CartTable = memo(function CartTable({
   cart,
   onViewProduct,
 }: {
@@ -224,7 +224,7 @@ export default function CartsPage() {
       })
       .map((cart) => {
         return (
-          <CartItem
+          <CartTable
             key={cart.id}
             cart={cart}
             onViewProduct={setProductIdPayload}
