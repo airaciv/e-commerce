@@ -78,11 +78,19 @@ const ProductTableRow = memo(function ProductTableRow({
   qty: number;
   onClick: () => void;
 }) {
-  const { data } = useProductsServiceGetProductsById({ id });
+  const { data, isPending } = useProductsServiceGetProductsById({ id });
+
+  if (isPending) {
+    return (
+      <TableRow>
+        <TableCell>Loading...</TableCell>
+      </TableRow>
+    );
+  }
 
   return (
     <TableRow className="flex gap-4">
-      <TableCell onClick={onClick} className="cursor-default">
+      <TableCell onClick={onClick} className="cursor-pointer">
         {data?.title}
       </TableCell>
       <TableCell>{qty}</TableCell>
