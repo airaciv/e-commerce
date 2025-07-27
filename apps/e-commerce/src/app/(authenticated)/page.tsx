@@ -8,7 +8,6 @@ import {
 } from '../_core/openapi/queries';
 import { GlobalStorageKey } from '../layout';
 import {
-  Modal,
   Rating,
   Table,
   TableBody,
@@ -22,6 +21,7 @@ import { format, isBefore } from 'date-fns';
 import { memo, useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { DatePicker } from '@mui/x-date-pickers';
+import { Modal } from '@bosshire-test/components';
 
 const ProductDetailModal = memo(function ProductDetailModal({
   id,
@@ -40,32 +40,30 @@ const ProductDetailModal = memo(function ProductDetailModal({
 
   return (
     <Modal open={!!id} onClose={onClose}>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-auto bg-white border-2 border-black shadow-2xl p-4">
-        <div className="w-96 p-4 rounded-2xl flex flex-col gap-1">
-          {data?.image && (
-            <div className="relative h-36 w-36 border rounded">
-              <Image
-                src={data.image}
-                alt={data.title ?? 'Product'}
-                fill
-                objectFit="contain"
-              />
-            </div>
-          )}
-
-          <div className="font-semibold line-clamp-2">{data?.title}</div>
-
-          <div className="flex items-center gap-1">
-            <Rating defaultValue={data?.rating?.rate} readOnly />
-
-            <span className="text-xs text-gray-500">
-              ({data?.rating?.count} reviews)
-            </span>
+      <div className="w-96 p-4 rounded-2xl flex flex-col gap-1">
+        {data?.image && (
+          <div className="relative h-36 w-36 border rounded">
+            <Image
+              src={data.image}
+              alt={data.title ?? 'Product'}
+              fill
+              objectFit="contain"
+            />
           </div>
+        )}
 
-          <div className="font-bold">${data?.price}</div>
-          <div className="line-clamp-3">{data?.description}</div>
+        <div className="font-semibold line-clamp-2">{data?.title}</div>
+
+        <div className="flex items-center gap-1">
+          <Rating defaultValue={data?.rating?.rate} readOnly />
+
+          <span className="text-xs text-gray-500">
+            ({data?.rating?.count} reviews)
+          </span>
         </div>
+
+        <div className="font-bold">${data?.price}</div>
+        <div className="line-clamp-3">{data?.description}</div>
       </div>
     </Modal>
   );
