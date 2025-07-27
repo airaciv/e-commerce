@@ -8,6 +8,7 @@ import { useMount } from 'react-use';
 import { OpenAPI } from './_core/openapi/requests';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 
 export enum GlobalStorageKey {
   TOKEN = 'token',
@@ -59,30 +60,32 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <QueryClientProvider client={queryClient}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <AppContext.Provider
-              value={{
-                toast: (message, options) => {
-                  setToastProp({ message, options });
-                },
-              }}
-            >
-              <Snackbar
-                open={!!toastProp.message}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                autoHideDuration={5000}
-                onClose={() => setToastProp({ message: '' })}
+        <AppRouterCacheProvider>
+          <QueryClientProvider client={queryClient}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <AppContext.Provider
+                value={{
+                  toast: (message, options) => {
+                    setToastProp({ message, options });
+                  },
+                }}
               >
-                <Alert severity={toastProp.options?.severity}>
-                  {toastProp.message}
-                </Alert>
-              </Snackbar>
+                <Snackbar
+                  open={!!toastProp.message}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                  autoHideDuration={5000}
+                  onClose={() => setToastProp({ message: '' })}
+                >
+                  <Alert severity={toastProp.options?.severity}>
+                    {toastProp.message}
+                  </Alert>
+                </Snackbar>
 
-              {children}
-            </AppContext.Provider>
-          </LocalizationProvider>
-        </QueryClientProvider>
+                {children}
+              </AppContext.Provider>
+            </LocalizationProvider>
+          </QueryClientProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
