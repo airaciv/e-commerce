@@ -31,7 +31,7 @@ const loginSchema: Struct<LoginPayload> = object({
 export default function LoginPage() {
   const { toast } = useAppContext();
   const router = useRouter();
-  const [_, setToken] = useLocalStorage(GlobalStorageKey.TOKEN);
+  const [_token, setToken] = useLocalStorage(GlobalStorageKey.TOKEN);
 
   const { mutate, isPending } = useAuthServicePostAuthLogin({
     onError: (error: ApiError) => {

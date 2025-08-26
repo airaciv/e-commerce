@@ -36,8 +36,6 @@ declare global {
   }
 }
 
-window.__TANSTACK_QUERY_CLIENT__ = queryClient;
-
 export default function RootLayout({
   children,
 }: {
@@ -55,6 +53,8 @@ export default function RootLayout({
       };
       return config;
     });
+
+    window.__TANSTACK_QUERY_CLIENT__ = queryClient;
   });
 
   return (

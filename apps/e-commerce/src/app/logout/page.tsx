@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function LogoutPage() {
   const { toast } = useAppContext();
   const router = useRouter();
-  const [value, setValue, remove] = useLocalStorage(GlobalStorageKey.TOKEN);
+  const [_value, _setValue, remove] = useLocalStorage(GlobalStorageKey.TOKEN);
 
   useMount(() => {
     remove();

@@ -40,8 +40,8 @@ const registerSchema: Struct<RegisterPayload> = object({
 export default function RegisterPage() {
   const { toast } = useAppContext();
   const router = useRouter();
-  const [_, setToken] = useLocalStorage(GlobalStorageKey.TOKEN);
-  const [userId, setUserId] = useLocalStorage(GlobalStorageKey.USER_ID);
+  const [_token, setToken] = useLocalStorage(GlobalStorageKey.TOKEN);
+  const [_userId, setUserId] = useLocalStorage(GlobalStorageKey.USER_ID);
 
   const { mutate, isPending } = useUsersServicePostUsers({
     onError: () => {
