@@ -6,10 +6,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, pattern, size, string, Struct } from 'superstruct';
 import { FormContainer, FormTextField } from '@bosshire-test/components';
 import { message } from '@bosshire-test/core';
-import { GlobalStorageKey, useAppContext } from '../../layout';
 import { useUsersServicePostUsers } from '../../_core/openapi/queries';
 import { useRouter } from 'next/navigation';
 import { useLocalStorage } from 'react-use';
+import { GlobalStorageKey, useAppContext } from '../../_core/layout/AppContext';
 
 interface RegisterPayload {
   username: string;

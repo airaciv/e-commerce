@@ -2,9 +2,9 @@
 
 import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
-import { GlobalStorageKey } from '../layout';
 import { useLocalStorage, useMount } from 'react-use';
 import { AppBar, Button, Container } from '@mui/material';
+import { GlobalStorageKey } from '../_core/layout/AppContext';
 
 export default function AuthenticatedLayout({ children }: PropsWithChildren) {
   const [token] = useLocalStorage(GlobalStorageKey.TOKEN);
