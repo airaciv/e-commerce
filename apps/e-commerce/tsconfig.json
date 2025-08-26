@@ -27,12 +27,13 @@
   "include": [
     "../../apps/e-commerce/.next/types/**/*.ts",
     "../../dist/apps/e-commerce/.next/types/**/*.ts",
+    ".next/types/**/*.ts",
     "next-env.d.ts",
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    ".next/types/**/*.ts"
+    "/e-commerce/types/**/*.ts"
   ],
   "exclude": [
     "out-tsc",
