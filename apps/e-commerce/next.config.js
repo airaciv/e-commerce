@@ -13,6 +13,7 @@ const nextConfig = {
   nx: {},
   images: {
     domains: ['fakestoreapi.com'],
+    unoptimized: true,
   },
   output: 'export',
   basePath: isProd ? '/e-commerce' : undefined,
