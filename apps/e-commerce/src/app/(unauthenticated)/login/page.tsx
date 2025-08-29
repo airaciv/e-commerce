@@ -1,10 +1,10 @@
 'use client';
 
 import { superstructResolver } from '@hookform/resolvers/superstruct';
-import { Button, Link } from '@mui/material';
+import { Button } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, size, string, Struct } from 'superstruct';
-import { FormContainer, FormTextField } from '@bosshire-test/components';
+import { FormContainer, FormTextField, Link } from '@bosshire-test/components';
 import { message } from '@bosshire-test/core';
 import { useAuthServicePostAuthLogin } from '../../_core/openapi/queries';
 import { useRouter } from 'next/navigation';
