@@ -1,16 +1,16 @@
 'use client';
 
 import { superstructResolver } from '@hookform/resolvers/superstruct';
-import { Button, Link } from '@mui/material';
+import { Button } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, size, string, Struct } from 'superstruct';
-import { FormContainer, FormTextField } from '@bosshire-test/components';
+import { FormContainer, FormTextField, Link } from '@bosshire-test/components';
 import { message } from '@bosshire-test/core';
-import { GlobalStorageKey, useAppContext } from '../../layout';
 import { useAuthServicePostAuthLogin } from '../../_core/openapi/queries';
 import { useRouter } from 'next/navigation';
 import { ApiError } from '../../_core/openapi/requests';
 import { useLocalStorage } from 'react-use';
+import { GlobalStorageKey, useAppContext } from '../../_core/layout/AppContext';
 
 interface LoginPayload {
   username: string;
@@ -31,7 +31,7 @@ const loginSchema: Struct<LoginPayload> = object({
 export default function LoginPage() {
   const { toast } = useAppContext();
   const router = useRouter();
-  const [_, setToken] = useLocalStorage(GlobalStorageKey.TOKEN);
+  const [_token, setToken] = useLocalStorage(GlobalStorageKey.TOKEN);
 
   const { mutate, isPending } = useAuthServicePostAuthLogin({
     onError: (error: ApiError) => {

@@ -1,13 +1,13 @@
 'use client';
 
 import { useLocalStorage, useMount } from 'react-use';
-import { GlobalStorageKey, useAppContext } from '../layout';
 import { useRouter } from 'next/navigation';
+import { GlobalStorageKey, useAppContext } from '../_core/layout/AppContext';
 
 export default function LogoutPage() {
   const { toast } = useAppContext();
   const router = useRouter();
-  const [value, setValue, remove] = useLocalStorage(GlobalStorageKey.TOKEN);
+  const [_value, _setValue, remove] = useLocalStorage(GlobalStorageKey.TOKEN);
 
   useMount(() => {
     remove();

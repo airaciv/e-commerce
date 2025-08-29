@@ -1,32 +1,13 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
 import './global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Alert, AlertProps, Snackbar } from '@mui/material';
 import { useMount } from 'react-use';
 import { OpenAPI } from './_core/openapi/requests';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-
-export enum GlobalStorageKey {
-  TOKEN = 'token',
-  USER_ID = 'userId',
-}
-
-interface ToastOptions {
-  severity: AlertProps['severity'];
-}
-interface AppContext {
-  toast: (message: string, options?: ToastOptions) => void;
-}
-
-const AppContext = createContext<AppContext>({
-  toast: () => {
-    return;
-  },
-});
+import { AppContextProvider } from './_core/layout/AppContext';
 
 const queryClient = new QueryClient();
 
@@ -36,18 +17,11 @@ declare global {
   }
 }
 
-window.__TANSTACK_QUERY_CLIENT__ = queryClient;
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [toastProp, setToastProp] = useState<{
-    message: string;
-    options?: ToastOptions;
-  }>({ message: '' });
-
   useMount(() => {
     OpenAPI.interceptors.request.use((config) => {
       config.headers = {
@@ -55,6 +29,8 @@ export default function RootLayout({
       };
       return config;
     });
+
+    window.__TANSTACK_QUERY_CLIENT__ = queryClient;
   });
 
   return (
@@ -63,26 +39,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <QueryClientProvider client={queryClient}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <AppContext.Provider
-                value={{
-                  toast: (message, options) => {
-                    setToastProp({ message, options });
-                  },
-                }}
-              >
-                <Snackbar
-                  open={!!toastProp.message}
-                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                  autoHideDuration={5000}
-                  onClose={() => setToastProp({ message: '' })}
-                >
-                  <Alert severity={toastProp.options?.severity}>
-                    {toastProp.message}
-                  </Alert>
-                </Snackbar>
-
-                {children}
-              </AppContext.Provider>
+              <AppContextProvider>{children}</AppContextProvider>
             </LocalizationProvider>
           </QueryClientProvider>
         </AppRouterCacheProvider>
@@ -90,5 +47,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-export const useAppContext = () => useContext(AppContext);

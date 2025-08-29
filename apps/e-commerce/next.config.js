@@ -2,6 +2,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins, withNx } = require('@nx/next');
+const isProd = process.env.NODE_ENV === 'production';
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -13,6 +14,10 @@ const nextConfig = {
   images: {
     domains: ['fakestoreapi.com'],
   },
+  output: 'export',
+  basePath: isProd ? '/e-commerce' : undefined,
+  assetPrefix: isProd ? '/e-commerce' : undefined,
+  distDir: isProd ? '/e-commerce' : undefined,
 };
 
 const plugins = [

@@ -8,7 +8,6 @@ import {
   useProductsServiceGetProducts,
   useProductsServiceGetProductsById,
 } from '../_core/openapi/queries';
-import { useAppContext } from '../layout';
 import {
   Button,
   Rating,
@@ -33,6 +32,7 @@ import { array, date, min, number, object, Struct } from 'superstruct';
 import { ProductsService } from '../_core/openapi/requests/services.gen';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from './_hooks/useCurrentUser';
+import { useAppContext } from '../_core/layout/AppContext';
 
 interface AddCartPayload {
   userId: number;

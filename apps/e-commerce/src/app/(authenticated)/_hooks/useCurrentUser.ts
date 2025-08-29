@@ -1,5 +1,5 @@
 import { useLocalStorage } from 'react-use';
-import { GlobalStorageKey } from '../../layout';
+import { GlobalStorageKey } from '../../_core/layout/AppContext';
 
 // Ideally, we should be able to get user data from the auth token instead of saving it in local storage
 export function useCurrentUser() {
