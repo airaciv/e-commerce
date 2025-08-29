@@ -12,7 +12,8 @@
   },
   "scripts": {
     "codegen": "openapi-rq -i ./fakestoreapi.json -o ./apps/e-commerce/src/app/_core/openapi/",
-    "postinstall": "npm run codegen"
+    "prebuild": "npm run codegen",
+    "build": "nx build --no-cloud"
   },
   "private": true,
   "dependencies": {
